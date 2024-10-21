@@ -1,4 +1,5 @@
 // components/PlaylistCard.js
+
 export default function PlaylistCard({ playlist }) {
     // Use the first image from playlists or the album image from tracks
     const imageUrl = playlist.images && playlist.images.length > 0
