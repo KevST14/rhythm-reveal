@@ -1,11 +1,18 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+"use client";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginButton() {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  if (session) {
+    // Redirect to the dashboard after login
+    router.push("/dashboard");
+    return null; // Prevents button flickering
+  }
 
   return (
-    <button onClick={session ? () => signOut() : () => signIn("spotify")}>
-      {session ? "Logout" : "Login with Spotify"}
-    </button>
+    <button onClick={() => signIn("spotify")}>Sign in with Spotify</button>
   );
 }
