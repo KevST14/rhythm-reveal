@@ -1,4 +1,5 @@
 import Providers from "../components/Providers";
+import Navbar from "../components/Navbar"; // Import Navbar
 import "./globals.css";
 
 export default function RootLayout({ children }) {
@@ -6,7 +7,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Providers>
-          {children}
+          <Navbar />
+          <main className="pt-16">{children}</main> {/* Add padding for navbar */}
         </Providers>
       </body>
     </html>
