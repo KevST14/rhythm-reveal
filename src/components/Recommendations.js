@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
@@ -11,32 +11,16 @@ export default function Recommendations() {
     setError("");
 
     try {
-      // Fetch user data (top tracks) from Spotify
-      const userDataResponse = await fetch("/api/user-data");
-      const userData = await userDataResponse.json();
-
-      if (!userData.topTracks || userData.topTracks.length === 0) {
-        throw new Error("No listening data found.");
-      }
-
-      // Extract track features from user's top tracks
-      const trackIds = userData.topTracks.slice(0, 5).map(track => track.id); // Top 5 tracks
-      const featuresResponse = await fetch(`/api/track-features?ids=${trackIds.join(",")}`);
-      const trackFeatures = await featuresResponse.json();
-
-      if (!trackFeatures || !trackFeatures.audio_features) {
-        throw new Error("Failed to fetch track features.");
-      }
-
-      // Send extracted features to AI model for recommendations
-      const aiResponse = await fetch("/api/recommendations", {
+      const response = await fetch("/api/recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ features: trackFeatures.audio_features }),
+        body: JSON.stringify({ features: [[120, 0.8, 0.9]] }), // Replace with real data
       });
 
-      const aiData = await aiResponse.json();
-      setRecommendations(aiData.recommendedTracks || []);
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      setRecommendations(data.recommendations || []);
     } catch (err) {
       setError(err.message || "Something went wrong.");
     }
