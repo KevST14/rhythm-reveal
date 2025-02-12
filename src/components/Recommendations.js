@@ -16,21 +16,20 @@ export default function Recommendations() {
         return;
       }
 
-      console.log("📡 Sending request with token:", session.accessToken);
+      console.log("📡 Fetching recommendations from AWS Lambda...");
 
-      const response = await fetch("/api/recommendations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accessToken: session.accessToken }),
-      });
+      // Your AWS Lambda API Gateway Endpoint
+      const AWS_LAMBDA_API = "https://0fiq7h0ot1.execute-api.eu-west-2.amazonaws.com/recommendations";
+
+      const response = await fetch(`${AWS_LAMBDA_API}?accessToken=${session.accessToken}`);
 
       const data = await response.json();
       if (data.error) throw new Error(data.error);
 
-      console.log("AI Recommendations Response:", data);
+      console.log("✅ AI Recommendations Response:", data);
       setRecommendations(data.recommendations || []);
     } catch (err) {
-      console.error("Recommendation Fetch Error:", err.message);
+      console.error("❌ Recommendation Fetch Error:", err.message);
       setError(err.message);
     }
   }
